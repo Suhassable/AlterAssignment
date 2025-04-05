@@ -1,6 +1,3 @@
-Thanks for the breakdown! Based on what you shared, here’s a complete `README.md` tailored to your setup:
-
----
 
 ```markdown
 # 🚀 User Data Ingestion and Similarity API
