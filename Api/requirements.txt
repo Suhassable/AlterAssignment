@@ -1,0 +1,6 @@
+Flask
+pandas
+google-cloud-storage
+google-cloud-secret-manager
+pymongo
+gunicorn
