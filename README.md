@@ -118,7 +118,7 @@ gcloud eventarc triggers create file-upload-trigger \
 
 ## 🔌 API Endpoints
 
-### 1. `/ingestion`
+### 1. `/upload'`
 
 **Method:** `POST`  
 **Description:** Upload a CSV or JSON file. The file is dumped into GCP bucket and processed into MongoDB.
@@ -133,7 +133,7 @@ gcloud eventarc triggers create file-upload-trigger \
 
 ---
 
-### 3. `/similar-user`
+### 3. `/similar_users`
 
 **Method:** `GET`  
 **Query Params:** `email` or `cookie`  
