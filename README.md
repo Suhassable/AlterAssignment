@@ -15,7 +15,8 @@ This project provides a set of Cloud Run-based APIs for ingesting user data, ret
   - Cloud Storage
   - Eventarc
 - **MongoDB Atlas**
-- **OpenAI API (for embeddings)**
+- **OpenAI API (for user segmentation)**
+- **Cohere API (for embeddings)**
 
 ---
 
@@ -36,16 +37,15 @@ This project provides a set of Cloud Run-based APIs for ingesting user data, ret
 
 ### 1. Set Up GCP Bucket
 
-Create a GCP bucket that will be used to dump uploaded files:
+-Create a GCP bucket that will be used to dump uploaded files
 
-```bash
-gsutil mb -p [PROJECT_ID] gs://[YOUR_BUCKET_NAME]
-```
+
 
 ### 2. Configure the API Code
 
 - Go to the `api/` folder
-- Replace the placeholder GCP bucket name in the code with your actual bucket name
+- Replace the placeholder GCP bucket name in the code with your actual bucket name.
+- This cloud run api will give us  three endpoints for ingestion, user data retrival and similar users.
 
 ### 3. Deploy API Service to Cloud Run
 
@@ -68,12 +68,13 @@ gcloud projects add-iam-policy-binding [PROJECT_ID] \
 
 ### 5. Deploy Second Cloud Run Function
 
-Deploy the second service using `second_function/cloud.py`. This service will be triggered by Eventarc:
+Deploy the second service using `Second Cloud Function.py`. This service will be triggered by Eventarc:
 
-- Create a new Cloud Run service for it
+- Create a new Cloud Run Function service for it
 - Deploy it as you did with the main API
+- This function will clean and load data into our MongoDB database. 
+- Also done user segmentation in this function.
 
----
 
 ### 6. Configure Eventarc Trigger
 
@@ -92,11 +93,28 @@ gcloud eventarc triggers create file-upload-trigger \
 
 ### 7. Set Up MongoDB Atlas
 
-- Create a MongoDB cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+-Create MongoDB atlas cluster which will we use to store cleaned user data.
+- We are using MongoDB because it provide vector search which ww will using for finding similar users.
 - Set up a database and collection
-- Enable **Triggers** and paste the content from `triggers.js` to handle embedding generation
 
----
+### 8. Setup Triggers for MongoDB
+
+- Store your cohere api key into values in MongoDB app service.
+- Setup Triggers using triggers.js file for update and insert action in collection.
+-This trigger will add embeddings to document when it is updated or new document inserted into database.
+
+### 9. User segmentation 
+
+- We areusing openai model for user segmentation by doing prompt enginnering.
+- We can improve model result by fine tuning model.
+- TO fine tune the model create data accoring to result you want. e.g. prompt : response
+- Train model on that data and use fine tuned model for user segmentation.
+
+### EDA 
+
+- In eda.ipynb file we have done some eda to uncover relation between different datapoints.
+
+
 
 ## 🔌 API Endpoints
 
@@ -105,8 +123,6 @@ gcloud eventarc triggers create file-upload-trigger \
 **Method:** `POST`  
 **Description:** Upload a CSV or JSON file. The file is dumped into GCP bucket and processed into MongoDB.
 
-
-
 ---
 
 ### 2. `/user`
@@ -114,7 +130,6 @@ gcloud eventarc triggers create file-upload-trigger \
 **Method:** `GET`  
 **Query Params:** `email` or `cookie`  
 **Description:** Retrieve user data by email or cookie.
-
 
 ---
 
@@ -151,3 +166,4 @@ By combining these technologies, the application retrieves users whose profile v
 - Make sure your MongoDB connection string and OpenAI API key are securely stored (e.g., via environment variables or Secret Manager)
 - Service accounts need proper access to GCS and Cloud Run
 - You can extend the embeddings logic by modifying `triggers.js`
+- You can use data proc clusters for function-2 which handle data cleaning and loading it into database and user segmentation
