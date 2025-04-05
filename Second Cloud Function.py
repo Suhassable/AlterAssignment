@@ -83,6 +83,13 @@ def hello_http(request):
 
     existing_users_df = pd.DataFrame(list(users_collection.find()))
 
+    def interests_formating(interests):
+        if pd.notna(interests):
+            return [interest.strip() for interest in interests.split('|')]
+        else:
+            None
+    user_file['interests']=user_file['interests'].apply(interests_formating)
+
     # Classify unique interests
     unique_interests = {interest for sublist in user_file['interests'].dropna() for interest in sublist}
     interest_to_cohort = {interest: classify_interest(interest) for interest in unique_interests}
