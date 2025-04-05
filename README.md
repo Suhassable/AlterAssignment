@@ -130,6 +130,22 @@ gcloud eventarc triggers create file-upload-trigger \
 ![alt text](Welcome_Board.png)
 
 
+
+## Similarity  Information
+In this project, the `similar-user` endpoint utilizes **cosine similarity** and **MongoDB's Vector Search** to identify users with comparable profiles.
+
+**Cosine Similarity:**
+This metric measures the cosine of the angle between two vectors, indicating their directional similarity. A value of 1 signifies identical orientation (maximum similarity), 0 indicates orthogonality (no similarity), and -1 denotes opposite orientation (maximum dissimilarity). This approach is effective in high-dimensional spaces, such as user attribute embeddings. citeturn0search0
+
+**MongoDB's Vector Search:**
+MongoDB Atlas provides native support for vector search, allowing storage and querying of vector embeddings alongside operational data. This integration facilitates semantic searches within your database. citeturn0search2
+
+By combining these technologies, the application retrieves users whose profile vectors closely align with the target user's vector, enabling efficient and accurate identification of similar users. 
+
+![alt text](image.png)
+
+
+
 ## 📝 Notes
 
 - Make sure your MongoDB connection string and OpenAI API key are securely stored (e.g., via environment variables or Secret Manager)
